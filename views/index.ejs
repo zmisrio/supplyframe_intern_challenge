@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link rel="stylesheet" type = "text/css" href="/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body class="bg-image" id="background">
+    <div class="container" style="margin: 4em auto">
+        <form class="form-inline mw-100 searchform" style="width: 730px" name="searchForm">
+            <h1 class="head" style="font-size: 20px; text-align: center; margin: 0.5em;">Business Search</h1>
+            <div class="container">
+                <div class="form-group" style="margin-bottom: 1em;">
+                    <label for="keyword" class="require">Keyword</label>
+                    <input type="text" name="keyword" class="form-control" id="keyword" required (ngModelChange)="autocomplete()">
+                </div>
+                <div class="row" style="margin-bottom: 1em;">
+                    <div class="col-md-6">
+                        <label for="distance">Distance(miles)</label>
+                        <input type="text" class="form-control" id="distance">
+                    </div>
+                    <div class="col-md">
+                        <label for="category" class="require">Category</label>
+                        <select name="category" id="category" class="form-control" style="width: 70%">
+                            <option value="All">Default</option>
+                            <option value="arts">Art & Entertainment</option>
+                            <option value="health">Health & Medical</option>
+                            <option value="hotelstravel">Hotels & Travel</option>
+                            <option value="food">Food</option>
+                            <option value="professional">Professional Services</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1em;">
+                    <label for="location" class="require" >Location</label>
+                    <input type="text" class="form-control" id="location" [disabled]="model.autodetect" required>
+                </div>
+                <div class="form-check" style="margin-bottom: 1em;">
+                    <input class="form-check-input" (click)="check()" type="checkbox" id="autodetect">
+                    <label class="form-check-label" for="autodetect">
+                        Auto-detect my location
+                    </label>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-danger" style="margin-right:1.5em" (click)="submitInfo()">Submit</button>
+                    <button type="button" class="btn btn-primary" (click) = "resetPage()">Clear</button>
+                </div>
+            </div>
+        </form>
+        <div class="d-flex justify-content-center" id="result">
+            <div id = "results" style="display: none;">
+                <table style='background-color: white; border-radius: 15px; text-align: center; margin-top: 50px;' class='table table-striped res_table justify-content-center'>
+                    <thead class='justify-content-center'>
+                        <tr >
+                        <th>#</th>
+                        <th>Image</th>
+                        <th>Business Name</th>
+                        <th>Rating</th>
+                        <th id='distance'>Distance(miles)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of data; let i = index" (click)="item_click(item.id)">
+                            <th scope='row'>{{ i + 1 }}</th>
+                            <td><img class="result_image" src={{item.image_url}} alt=''></td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.rating }}</td>
+                            <td>{{ item.distance}}</td>
+                        </tr>
+                    </tbody>
+                    </table>
+            </div>
+            <div id="business_detail" class="justify-content-center container" style="background-color: white; margin-top: 50px; border-radius: 15px; padding-left: 0px; display: none;">
+                <button type="button" style="margin: 5px 5px; border: hidden; background-color: white;" (click) = "return_to_result()">&#10229;</button>
+                <div style="text-align: center">
+                    <h3>{{detail_info.name}}</h3>
+                </div>
+                
+                <mat-tab-group mat-stretch-tabs id="tab" backgroundColor="accent" [(selectedIndex)]="default_val">
+                    <mat-tab  style="margin-top: 20px;" label="Business Details" class="row">
+                        <div class="row" style="margin-top: 30px">
+                          <div class="col-md-6 col-sm-12" style="text-align: center;" *ngIf="is_address">
+                            <h4>Address</h4>
+                            <p>{{detail_info.address}}</p>
+                        </div>
+                        <div class="col" style="text-align: center" *ngIf="is_category">
+                            <h4>Category</h4>
+                            <p>{{detail_info.category}}</p>
+                        </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px" *ngIf="is_phone">
+                          <div class="col-md-6 col-sm-12" style="text-align: center">
+                            <h4>Phone</h4>
+                            <p>{{detail_info.phone}}</p>
+                        </div>
+                        <div class="col-md-6 col-sm-12" style="text-align: center" *ngIf="is_price">
+                            <h4>Price Range</h4>
+                            <p>{{detail_info.price}}</p>
+                        </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px">
+                          <div class="col-md-6 col-sm-12" style="text-align: center" *ngIf="is_status">
+                            <h4>Status</h4>
+                            <p style="color: red" *ngIf="!is_open">Closed</p>
+                            <p style="color: green" *ngIf="is_open">Open now</p>
+                        </div>
+                        <div class="col-md-6 col-sm-12" style="text-align: center">
+                            <h4>Visit Yelp for more</h4>
+                            <a href={{detail_info.link}} target="_blank">Business Link</a>
+                        </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 10px;">
+                            Share on: 
+                            <a href="https://twitter.com/intent/tweet?text=Check%20{{detail_info.name}}%20on%20Yelp.&url={{detail_info.link}}" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-twitter" viewBox="0 0 16 16">
+                                    <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+                                  </svg>
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{detail_info.link}}" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">
+                                    <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+                                  </svg>
+                            </a>
+                        </div>
+                        <div id="carouselExampleInterval" class="carousel carousel-dark slide" data-bs-ride="carousel" style="margin-top: 20px; margin-bottom: 20px;" *ngIf="is_carousel">
+                            <div class="carousel-inner justify-content-center">
+                              <div class="carousel-item active" data-bs-interval="2000" >
+                                <div class="justify-content-center d-flex">
+                                    <img class="detail_img" src={{detail_photo[0]}} alt="">
+                                </div>
+                              </div>
+                              <div class="carousel-item" data-bs-interval="2000">
+                                <div class="justify-content-center d-flex">
+                                    <img class="detail_img" src={{detail_photo[1]}} alt="">
+                                </div>
+                              </div>
+                              <div class="carousel-item" data-bs-interval="2000">
+                                <div class="justify-content-center d-flex">
+                                    <img class="detail_img" src={{detail_photo[2]}} alt="">
+                                </div>
+                              </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                              <span class="visually-hidden">Next</span>
+                            </button>
+                          </div>
+                    </mat-tab>
+                    <mat-tab label="Map Location">
+                        <div class="my-google-map" style="margin-bottom: 20px;" >
+                            <google-map width = 100% height = 500px [options]="mapOptions">
+                              <map-marker [position]="marker.position"></map-marker>
+                            </google-map>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Reviews">
+                      <div  *ngIf="is_review">
+                        <table class="table table-striped">
+                          <tbody>
+                            <tr *ngFor="let review of reviews">
+                              <td>
+                                <h6><b>
+                                  {{review.name}}
+                                </b>
+                                </h6>
+                                <p>
+                                  Rating: {{review.rating}}/5
+                                </p>
+                                <p>
+                                  {{review.text}}
+                                </p>
+                                <p>
+                                  {{review.time}}
+                                </p>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </mat-tab>
+                  </mat-tab-group>
+            </div>        
+            <!-- <app-details style="display: none;"></app-details> -->
+            <app-no-results id="no_results" style="display: none;"></app-no-results>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXUyVnOrZ2lrZpx6iM1rPorRjDbM1ABhg"></script>
+  </body>
+</html>

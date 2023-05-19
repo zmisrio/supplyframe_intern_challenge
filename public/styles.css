@@ -1,0 +1,74 @@
+#background{
+    background-image: url(images/city.jpg); 
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-attachment: fixed;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.searchform {
+    margin: 0.5em auto;
+    border: solid #C8C8C8;
+    border-radius: 15px;
+    background-color: white;
+    padding: 1em;
+}
+.require::after {
+    content: "*";
+    color: red;
+}
+
+@media screen and (min-width: 768px){
+    .res_table{
+        width: 1200px;
+    }
+    .result_image{
+        width: 100px;
+        height: 100px;
+    }
+    #business_detail{
+        width: 800px;
+      }
+      .detail_img{
+        height: 390px;
+        width: 370px;
+      }
+}
+
+@media screen and (max-width: 767.98px) { 
+    .res_table{
+        width: 100%;
+    }
+    th{
+        font-size:x-small;
+    }
+    .result_image{
+        width: 40px;
+        height: 40px;
+    }
+    #distance{
+        width: 80px;
+        word-break: break-all;
+        word-wrap: break-word;
+    }
+    #business_detail{
+        width: 360px;
+        padding: 0px;
+      }
+      #tab{   
+        width: 100%;
+        margin: auto auto;
+      }
+      .detail_img{
+        width: 300px;
+        height: 320px;
+      }
+ }
+
+ .my-google-map
+    .map-container{
+      width: 800px;
+      height: 600px;
+    }

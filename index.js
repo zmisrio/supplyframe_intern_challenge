@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const ejs = require('ejs')
 const axios = require('axios');
 const app = express(),
       port = 3080;
@@ -7,7 +8,9 @@ const api_key = 'Jsg-qejX62hVkRI02dXBTidisXOr3kt_UHqCJNATmTbWOh9mCapNk7zr6ucDKgw
 
 app.use(cors())
 
-// app.use(express.static('../frontend/dist/frontend'));
+app.set("view engine","ejs")
+
+app.use(express.static(__dirname + '/public'));
 
 //autocomplete for the input term
 app.get('/autocomplete',async(req,res)=> {
@@ -91,15 +94,11 @@ app.get('/reviews_request',async(req,res)=>{
   }
 })
 
-// app.get('/', (req,res) => {
-//     // res.send('App Works !!!!');
-//     res.sendFile('frontend/dist/frontend/index.html');
-// });
+//render frontend web page
+app.get('/', (req,res) => {
+    res.render("index")
+});
 
-// const PORT = process.env.port || 8080;
-// app.listen(PORT, () => {
-//     console.log(`Server listening on the port::${PORT}`);
-// });
 
 app.listen(port, () => {
   console.log(`Server listening on the port::${port}`);
