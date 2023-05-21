@@ -56,9 +56,12 @@ app.get('/search_request', cors(),async(req,res)=> {
     })
     res.send(response.data.businesses)
   }
+
   catch(err){
     console.log(err);
   }
+
+//   res.render("index")
   })
 
 

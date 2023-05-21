@@ -1,4 +1,6 @@
 var loc;//location var
+var yelpData;
+var url_origin = 'http://127.0.0.1:3080'
 
 function resetPage(){
     document.getElementById("keyword").value = "";
@@ -83,11 +85,11 @@ function submitInfo(){
         longitude = parseFloat(location[1]);
     }
     getYelpData(keyword,latitude,longitude,category,distance);
-    // if(yelpData.length==0)
-    //     document.getElementById("result").innerHTML = '<p id="result-none">No record has been found</p>';
-    // else
-    //     generate_res();
-    // window.location.href= url_origin+"#result";
+    if(yelpData.length==0)
+        document.getElementById("result").innerHTML = '<p id="result-none">No record has been found</p>';
+    else
+        generate_res();
+    window.location.href= url_origin+"#result";
 }
 
 function getYelpData(keyword,latitude,longitude,category,distance){
@@ -106,10 +108,38 @@ function getYelpData(keyword,latitude,longitude,category,distance){
        dataType: 'json',
        url: 'http://127.0.0.1:3080/' +'search_request',
        success: function (data) {
+            yelpData = data
             console.log(data)
        },
        error: function(error) {
        console.log(error);
    }
    });
+}
+
+function generate_res(){
+    var innerContent = `<div id = "results">
+    <table style='background-color: white; border-radius: 15px; text-align: center; margin-top: 50px;' class='table table-striped res_table justify-content-center'>
+        <thead class='justify-content-center'>
+            <tr >
+            <th>#</th>
+            <th>Image</th>
+            <th>Business Name</th>
+            <th>Rating</th>
+            <th id='distance'>Distance(miles)</th>
+            </tr>
+        </thead>
+        <tbody>`;
+    for(let i = 0; i < yelpData.length; i++){
+        innerContent += `<tr id=${yelpData[i].id} onclick='get_details(this)'">
+        <th scope='row'>${i+1}</th>
+        <td><img class="result_image" src=${yelpData[i].image_url} alt=''></td>
+        <td>${yelpData[i].name}</td>
+        <td>${yelpData[i].rating}</td>
+        <td>${(yelpData[i].distance/1600.0).toFixed(2)}</td>
+    </tr>`
+    }
+    innerContent+=`</tbody>
+    </table>`;
+    document.getElementById("result").innerHTML = innerContent;
 }

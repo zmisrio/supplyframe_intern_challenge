@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
-  <body class="bg-image" id="background">
+  <body class="bg-image" id="background" onload="resetPage()">
     <div class="container" style="margin: 4em auto">
       <!-- Search Form -->
         <form class="form-inline mw-100 searchform" style="width: 730px" name="searchForm">
@@ -58,7 +58,7 @@
             </div>
         </form>
         <div class="d-flex justify-content-center" id="result">
-            <div id = "results" style="display: none;">
+            <!-- <div id = "results" style="display: none;">
                 <table style='background-color: white; border-radius: 15px; text-align: center; margin-top: 50px;' class='table table-striped res_table justify-content-center'>
                     <thead class='justify-content-center'>
                         <tr >
@@ -69,7 +69,7 @@
                         <th id='distance'>Distance(miles)</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody> -->
                         <!-- <tr *ngFor="let item of data; let i = index" (click)="item_click(item.id)">
                             <th scope='row'>{{ i + 1 }}</th>
                             <td><img class="result_image" src={{item.image_url}} alt=''></td>
@@ -77,36 +77,37 @@
                             <td>{{ item.rating }}</td>
                             <td>{{ item.distance}}</td>
                         </tr> -->
-                    </tbody>
-                    </table>
+                    <!-- </tbody>
+                    </table> -->
             </div>
+            
             <div id="business_detail" class="justify-content-center container" style="background-color: white; margin-top: 50px; border-radius: 15px; padding-left: 0px; display: none;">
-                <button type="button" style="margin: 5px 5px; border: hidden; background-color: white;" (click) = "return_to_result()">&#10229;</button>
-                <div style="text-align: center">
+                <!-- <button type="button" style="margin: 5px 5px; border: hidden; background-color: white;" (click) = "return_to_result()">&#10229;</button>
+                <div style="text-align: center"> -->
                     <!-- <h3>{{detail_info.name}}</h3> -->
-                </div>
+                <!-- </div> -->
                 
-                <mat-tab-group mat-stretch-tabs id="tab" backgroundColor="accent" [(selectedIndex)]="default_val">
+                <!-- <mat-tab-group mat-stretch-tabs id="tab" backgroundColor="accent" [(selectedIndex)]="default_val">
                     <mat-tab  style="margin-top: 20px;" label="Business Details" class="row">
                         <div class="row" style="margin-top: 30px">
                           <div class="col-md-6 col-sm-12" style="text-align: center;" *ngIf="is_address">
-                            <h4>Address</h4>
+                            <h4>Address</h4> -->
                             <!-- <p>{{detail_info.address}}</p> -->
-                        </div>
+                        <!-- </div>
                         <div class="col" style="text-align: center" *ngIf="is_category">
-                            <h4>Category</h4>
+                            <h4>Category</h4> -->
                             <!-- <p>{{detail_info.category}}</p> -->
-                        </div>
+                        <!-- </div>
                         </div>
                         <div class="row" style="margin-top: 20px" *ngIf="is_phone">
                           <div class="col-md-6 col-sm-12" style="text-align: center">
-                            <h4>Phone</h4>
+                            <h4>Phone</h4> -->
                             <!-- <p>{{detail_info.phone}}</p> -->
-                        </div>
+                        <!-- </div>
                         <div class="col-md-6 col-sm-12" style="text-align: center" *ngIf="is_price">
-                            <h4>Price Range</h4>
+                            <h4>Price Range</h4> -->
                             <!-- <p>{{detail_info.price}}</p> -->
-                        </div>
+                        <!-- </div>
                         </div>
                         <div class="row" style="margin-top: 20px">
                           <div class="col-md-6 col-sm-12" style="text-align: center" *ngIf="is_status">
@@ -115,9 +116,9 @@
                             <p style="color: green" *ngIf="is_open">Open now</p>
                         </div>
                         <div class="col-md-6 col-sm-12" style="text-align: center">
-                            <h4>Visit Yelp for more</h4>
+                            <h4>Visit Yelp for more</h4> -->
                             <!-- <a href={{detail_info.link}} target="_blank">Business Link</a> -->
-                        </div>
+                        <!-- </div>
                         </div>
                         <div style="text-align: center; margin-top: 10px;">
                             Share on: 
@@ -135,19 +136,19 @@
                         <div id="carouselExampleInterval" class="carousel carousel-dark slide" data-bs-ride="carousel" style="margin-top: 20px; margin-bottom: 20px;" *ngIf="is_carousel">
                             <div class="carousel-inner justify-content-center">
                               <div class="carousel-item active" data-bs-interval="2000" >
-                                <div class="justify-content-center d-flex">
+                                <div class="justify-content-center d-flex"> -->
                                     <!-- <img class="detail_img" src={{detail_photo[0]}} alt=""> -->
-                                </div>
+                                <!-- </div>
                               </div>
                               <div class="carousel-item" data-bs-interval="2000">
-                                <div class="justify-content-center d-flex">
+                                <div class="justify-content-center d-flex"> -->
                                     <!-- <img class="detail_img" src={{detail_photo[1]}} alt=""> -->
-                                </div>
+                                <!-- </div>
                               </div>
                               <div class="carousel-item" data-bs-interval="2000">
-                                <div class="justify-content-center d-flex">
+                                <div class="justify-content-center d-flex"> -->
                                     <!-- <img class="detail_img" src={{detail_photo[2]}} alt=""> -->
-                                </div>
+                                <!-- </div>
                               </div>
                             </div>
                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
@@ -160,9 +161,9 @@
                             </button>
                           </div>
                     </mat-tab>
-                  </mat-tab-group>
+                  </mat-tab-group> -->
             </div>        
-            <app-no-results id="no_results" style="display: none;"></app-no-results>
+            <!-- <app-no-results id="no_results" style="display: none;"></app-no-results> -->
         </div>
     </div>
     <script src="/index.js"></script>
