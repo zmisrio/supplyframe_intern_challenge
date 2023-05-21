@@ -36,12 +36,12 @@ app.get('/search_request', cors(),async(req,res)=> {
   let term = req.query.term;
   let categories = req.query.categories;
   let latitude = req.query.latitude;
-  let longtitude = req.query.longtitude;
+  let longitude = req.query.longitude;
   let radius = req.query.radius;
   const req_data = {
                     'term': term,
                     'latitude' : latitude,
-                    'longitude' : longtitude,
+                    'longitude' : longitude,
                     'categories' : categories,
                     'radius' : radius
   }

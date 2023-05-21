@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/zmisrio/supplyframe_intern_challenge#readme",
   "dependencies": {
+    "bootstrap": "^5.3.0-alpha3",
     "cors": "^2.8.5",
     "ejs": "^3.1.9",
     "express": "^4.18.2"
