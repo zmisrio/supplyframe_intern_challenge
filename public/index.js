@@ -86,12 +86,15 @@ function submitInfo(){
     }
     getYelpData(keyword,latitude,longitude,category,distance);
     if(yelpData.length==0)
-        document.getElementById("result").innerHTML = '<p id="result-none">No record has been found</p>';
+        document.getElementById("result").innerHTML = `<p style="margin-top: 3em;">
+        <b style="color: red; width: 100%; background-color: white; padding: 0.5em 100px; border-radius: 1em;">No Results available</b>
+    </p>`;
     else
         generate_res();
     window.location.href= url_origin+"#result";
 }
 
+//call backend for business search API data
 function getYelpData(keyword,latitude,longitude,category,distance){
     var info = {
         term : keyword,
@@ -106,10 +109,9 @@ function getYelpData(keyword,latitude,longitude,category,distance){
        async: false,
        data: info,
        dataType: 'json',
-       url: 'http://127.0.0.1:3080/' +'search_request',
+       url: url_origin +'/search_request',
        success: function (data) {
             yelpData = data
-            console.log(data)
        },
        error: function(error) {
        console.log(error);
@@ -117,9 +119,10 @@ function getYelpData(keyword,latitude,longitude,category,distance){
    });
 }
 
+// generate result table
 function generate_res(){
     var innerContent = `<div id = "results">
-    <table style='background-color: white; border-radius: 15px; text-align: center; margin-top: 50px;' class='table table-striped res_table justify-content-center'>
+    <table id = "res" data-toggle="table" data-pagination="true" style='background-color: white; border-radius: 15px; text-align: center; margin-top: 50px;' class='table table-striped res_table justify-content-center'>
         <thead class='justify-content-center'>
             <tr >
             <th>#</th>
@@ -130,7 +133,7 @@ function generate_res(){
             </tr>
         </thead>
         <tbody>`;
-    for(let i = 0; i < yelpData.length; i++){
+    for(let i = 0; i < yelpData.length; i++){       
         innerContent += `<tr id=${yelpData[i].id} onclick='get_details(this)'">
         <th scope='row'>${i+1}</th>
         <td><img class="result_image" src=${yelpData[i].image_url} alt=''></td>
@@ -142,4 +145,206 @@ function generate_res(){
     innerContent+=`</tbody>
     </table>`;
     document.getElementById("result").innerHTML = innerContent;
+    $("#res").DataTable({
+        info: false,
+        lengthChange: false,
+        searching: false,
+        pageLength:5
+    });
+}
+
+
+//get business detail when click the table row
+function get_details(obj){
+    var info = {
+        id : obj.id
+    }
+    var details;
+    $.ajax({
+        type: 'GET',
+        contentType: 'application/json',
+        async: false,
+        data: info,
+        dataType: 'json',
+        url: url_origin +'/detail_request',
+        success: function (data) {
+            console.log(data)
+            details = data
+        },
+        error: function(error) {
+        console.log(error);
+    }
+    });
+    details = deal_with_details(details);
+    generate_datails(details);
+    // window.location.href= url_origin+"#detail";
+}
+
+function deal_with_details(details){
+    var detail_name = details.name;
+    var status = '';
+    if(Reflect.has(details,'hours')&&details.hours.length>0){
+        var detail_hours = details.hours[0];
+        if(Reflect.has(detail_hours,'is_open_now'))
+            status = detail_hours.is_open_now;
+    }
+    var category = ''
+    if(Reflect.has(details,'categories')&&details.categories.length>0){
+        category = details.categories[0].title;
+        if(details.categories.length > 1){
+            for(i=1; i<details.categories.length;i++){
+                category += ' | '
+                category += details.categories[i].title;
+            }
+        }
+    }
+    var address = '';
+    var detail_location = details.location;
+    if(Reflect.has(detail_location,'display_address')&&detail_location.display_address.length>0){
+        for(i=0;i<detail_location.display_address.length; i++){
+            address += detail_location.display_address[i];
+            address += ' ';
+        }
+    }
+    var phone_number = ''
+    if(Reflect.has(details,'display_phone')){
+        phone_number = details.display_phone
+    }
+    else if(Reflect.has(details,'phone')){
+        phone_number = details.phone
+    }
+    var transaction = '';
+    if(Reflect.has(details,'transactions')&&details.transactions.length>0){
+        transaction = details.transactions[0];
+        if(details.transactions.length>1){
+            for(i=1; i<details.transactions.length;i++){
+                transaction += ' | ';
+                transaction += details.transactions[i];
+            }
+        }
+    }
+    var price = ''
+    if(Reflect.has(details, 'price')){
+        price = details.price;
+    }
+    var more_info = details.url;
+    var photos = '';
+    if(Reflect.has(details,'photos')){
+        photos = details.photos;
+    }
+    var info = {
+        detail_name: detail_name,
+        status : status,
+        category : category,
+        address : address,
+        phone_number : phone_number,
+        transaction : transaction,
+        price : price,
+        more_info : more_info,
+        photos : photos 
+    }
+    return info
+}
+
+function generate_datails(details){
+    var innerContent = `<div class="detail">
+    <p id = "detail_name"><strong>${details.detail_name}</strong></hp>
+    <hr class="lb">
+    <div style="height: 60px"> 
+        <h2>
+            <ul>`;
+    if(details.status!=''){
+        innerContent += `<li>Status</li>`;
+    }
+    if(details.category!=''){
+        innerContent += `<li>Category</li>`;
+    }
+    innerContent += `</ul>
+    </h2>
+    <br>
+    <ul>`;
+    if(details.status!=''){
+        if(details.status==true){
+            innerContent += `<li><div id = 'status_true'>Open Now</div></li>`
+        }
+        else{
+            innerContent += `<li><div id = 'status_false'>Closed</div></li>`
+        }
+    }
+    if(details.category!=''){
+        innerContent += `<li id = 'detail_category'>${details.category}</li>`
+    }
+    innerContent += `</ul>
+    </div>
+    <br>
+    <div style="height: 60px;">
+                <h2>
+                    <ul>`;
+    if(details.address!=''){
+        innerContent += `<li>Address</li>`
+    }
+    if(details.phone_number!=''){
+        innerContent += `<li>Phone Number</li>`
+    }
+    innerContent += `</ul>
+    </h2>
+    <br>
+    <ul>`;
+    if(details.address!=''){
+        innerContent += `<li class="info">${details.address}</li>`;
+    }
+    if(details.phone_number!=''){
+        innerContent += `<li class="info">${details.phone_number}</li>`;
+    }
+    innerContent += `</ul>
+    </div>
+    <div style="height: 60px;">
+        <h2>
+            <ul>`;
+    if(details.transaction!=''){
+        innerContent += `<li>Transactions Supported</li>`
+    }
+    if(details.price!=''){
+        innerContent += `<li>Price</li>`
+    }
+    innerContent += `</ul>
+    </h2>
+    <br>
+    <ul>`;
+    if(details.transaction!=''){
+        innerContent+=`<li class="info">${details.transaction}</li>`;
+    }
+    if(details.price!=''){
+        innerContent+=`<li class="info">${details.price}</li>`
+    }
+    innerContent+=`</ul>
+    </div>
+    <div style="height: 60px;">
+        <h2>
+            <ul>
+                <li style="width: 100%;">More Info</li>
+            </ul>
+        </h2>
+        <ul>
+            <li class="info"><a href=${details.more_info}>Yelp</a></li>
+        </ul>
+    </div>
+    <div>
+        <ul>`;
+    if(details.photos!=''){
+        for(i=0; i < Math.min(details.photos.length,3);i++){
+            innerContent+=`<li class="photo">
+            <div class="detail_photo">
+                <div class="photo_img">
+                    <img style="width: 100%; max-height : 100%" src=${details.photos[i]} alt="img">
+                </div>
+                <div class="photo_tag">Photo ${i+1}</div>
+            </div>
+        </li>`
+        }
+    }
+    innerContent += `</ul>
+    </div>
+</div>`;
+    document.getElementById("detail").innerHTML = innerContent;
 }

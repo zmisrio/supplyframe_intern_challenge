@@ -61,7 +61,6 @@ app.get('/search_request', cors(),async(req,res)=> {
     console.log(err);
   }
 
-//   res.render("index")
   })
 
 
