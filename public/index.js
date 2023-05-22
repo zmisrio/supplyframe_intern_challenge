@@ -12,8 +12,12 @@ function resetPage(){
     if(loc.hasAttribute("disabled")){
         loc.removeAttribute("disabled");
     }
+    
     document.getElementById("result").innerHTML = '';
-    document.getElementById("detail").innerHTML = '';
+    // document.getElementById("detail").innerHTML = '';
+    $("#detail")
+    .css("display","none")
+    window.location.href= url_origin
 }
 
 // disable the location text input and get the location using ipinfo.io
@@ -146,11 +150,10 @@ function generate_res(){
     </table>`;
     document.getElementById("result").innerHTML = innerContent;
     $("#res").DataTable({
-        info: false,
         lengthChange: false,
         searching: false,
         pageLength:5
-    });
+    })
 }
 
 
@@ -247,104 +250,40 @@ function deal_with_details(details){
 }
 
 function generate_datails(details){
-    var innerContent = `<div class="detail">
-    <p id = "detail_name"><strong>${details.detail_name}</strong></hp>
-    <hr class="lb">
-    <div style="height: 60px"> 
-        <h2>
-            <ul>`;
-    if(details.status!=''){
-        innerContent += `<li>Status</li>`;
-    }
-    if(details.category!=''){
-        innerContent += `<li>Category</li>`;
-    }
-    innerContent += `</ul>
-    </h2>
-    <br>
-    <ul>`;
+    $("#business_name").text(details.detail_name)
+    $("#business_address").text(details.address)
+    $("#business_category").text(details.category)
+    $("#business_phone").text(details.phone)
+    $("#business_price").text(details.price)
     if(details.status!=''){
         if(details.status==true){
-            innerContent += `<li><div id = 'status_true'>Open Now</div></li>`
+            $("#business_status")
+            .append(
+                $("<p/>")
+                .css("color","green")
+                .text("Open now")
+            )
         }
         else{
-            innerContent += `<li><div id = 'status_false'>Closed</div></li>`
+            $("#business_status")
+            .append(
+                $("<p/>")
+                .css("color","red")
+                .text("Closed")
+            )
         }
     }
-    if(details.category!=''){
-        innerContent += `<li id = 'detail_category'>${details.category}</li>`
-    }
-    innerContent += `</ul>
-    </div>
-    <br>
-    <div style="height: 60px;">
-                <h2>
-                    <ul>`;
-    if(details.address!=''){
-        innerContent += `<li>Address</li>`
-    }
-    if(details.phone_number!=''){
-        innerContent += `<li>Phone Number</li>`
-    }
-    innerContent += `</ul>
-    </h2>
-    <br>
-    <ul>`;
-    if(details.address!=''){
-        innerContent += `<li class="info">${details.address}</li>`;
-    }
-    if(details.phone_number!=''){
-        innerContent += `<li class="info">${details.phone_number}</li>`;
-    }
-    innerContent += `</ul>
-    </div>
-    <div style="height: 60px;">
-        <h2>
-            <ul>`;
-    if(details.transaction!=''){
-        innerContent += `<li>Transactions Supported</li>`
-    }
-    if(details.price!=''){
-        innerContent += `<li>Price</li>`
-    }
-    innerContent += `</ul>
-    </h2>
-    <br>
-    <ul>`;
-    if(details.transaction!=''){
-        innerContent+=`<li class="info">${details.transaction}</li>`;
-    }
-    if(details.price!=''){
-        innerContent+=`<li class="info">${details.price}</li>`
-    }
-    innerContent+=`</ul>
-    </div>
-    <div style="height: 60px;">
-        <h2>
-            <ul>
-                <li style="width: 100%;">More Info</li>
-            </ul>
-        </h2>
-        <ul>
-            <li class="info"><a href=${details.more_info}>Yelp</a></li>
-        </ul>
-    </div>
-    <div>
-        <ul>`;
-    if(details.photos!=''){
-        for(i=0; i < Math.min(details.photos.length,3);i++){
-            innerContent+=`<li class="photo">
-            <div class="detail_photo">
-                <div class="photo_img">
-                    <img style="width: 100%; max-height : 100%" src=${details.photos[i]} alt="img">
-                </div>
-                <div class="photo_tag">Photo ${i+1}</div>
-            </div>
-        </li>`
-        }
-    }
-    innerContent += `</ul>
-    </div>
-</div>`;
-    document.getElementById("detail").innerHTML = innerContent;
+    $("#business_link").attr("href", details.more_info)
+    $("#img0").attr("src",details.photos[0])
+    $("#img1").attr("src",details.photos[1])
+    $("#img2").attr("src",details.photos[2])
+    $("#detail")
+    .css('display', 'block')
+    window.location.href= url_origin+"#detail"
+}
+
+function return_to_result(){
+    $("#detail")
+    .css('display', 'none')
+    window.location.href= url_origin+"#result"
 }
