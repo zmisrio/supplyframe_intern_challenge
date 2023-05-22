@@ -7,7 +7,7 @@ To run the app:
 1. Clone the repo:
 
    ```sh
-git clone https://github.com/zmisrio/supplyframe_intern_challenge.git
+   git clone https://github.com/zmisrio/supplyframe_intern_challenge.git
    ```
 
 2. npm install:
